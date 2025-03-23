@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center">메인 페이지 깃허브에 올렷습니다</h1>
+        <h1 class="text-center">메인 페이지 깃허브 테스트 입니다..</h1>
 
         <!-- 현재 로그인 상태 확인 -->
         <c:choose>
