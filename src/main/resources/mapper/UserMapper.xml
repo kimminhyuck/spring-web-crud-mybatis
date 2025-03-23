@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.myproject.mapper.UserMapper">
+
+    <!-- ResultMap: DB 컬럼과 User 모델 간의 매핑 설정 -->
+    <resultMap id="userResultMap" type="com.myproject.model.User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="address" column="address"/>
+        <result property="role" column="role"/>
+    </resultMap>
+
+    <!-- 사용자 이름(username)을 기준으로 사용자 정보를 조회 -->
+    <select id="findByUsername" resultMap="userResultMap">
+        SELECT id, username, name, email, password, address, role
+        FROM users
+        WHERE username = #{username}
+    </select>
+
+    <!-- 사용자 ID를 기준으로 사용자 정보를 조회 -->
+    <select id="findById" resultMap="userResultMap">
+        SELECT id, username, name, email, password, address, role
+        FROM users
+        WHERE id = #{id}
+    </select>
+
+    <!-- 이메일을 기준으로 사용자 정보를 조회 -->
+    <select id="findByEmail" resultMap="userResultMap">
+        SELECT id, username, name, email, password, address, role
+        FROM users
+        WHERE email = #{email}
+    </select>
+
+    <!-- 새로운 사용자 등록 -->
+    <insert id="insertUser" parameterType="com.myproject.model.User">
+        INSERT INTO users (username, name, email, password, address, role)
+        VALUES (#{username}, #{name}, #{email}, #{password}, #{address}, #{role})
+    </insert>
+
+    <!-- 사용자 정보 수정 -->
+    <update id="updateUser" parameterType="com.myproject.model.User">
+        UPDATE users
+        SET name = #{name}, email = #{email}, password = #{password}, address = #{address}, role = #{role}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 사용자 삭제 -->
+    <delete id="deleteUser" parameterType="long">
+        DELETE FROM users WHERE id = #{id}
+    </delete>
+
+</mapper>

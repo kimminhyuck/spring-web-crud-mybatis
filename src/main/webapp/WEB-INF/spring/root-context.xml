@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    root-context.xml
+    ────────────────────────────────
+    이 파일은 애플리케이션 전반에 걸친 공통 설정을 담당합니다.
+    주요 역할:
+      - 컴포넌트 스캔: com.myproject 패키지 내의 @Component, @Service, @Repository, @Controller
+등을 자동 등록
+      - 데이터베이스 연결 설정: DataSource를 통한 MySQL 연결 정보 제공
+      - MyBatis 설정: SqlSessionFactory를 통해 매퍼 XML 파일 로드
+      - 트랜잭션 관리: 트랜잭션 매니저와 선언적 트랜잭션(@Transactional) 활성화
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+						http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!--
+         Component Scan
+        com.myproject 패키지 내의 @Component, @Service, @Repository, @Controller 등을 자동 등록
+    -->
+	<context:component-scan base-package="com.myproject" />
+
+	<!--
+        DataSource 설정
+        MySQL 연결 정보 (smboard DB, smuser/1234)
+    -->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/smboard?serverTimezone=Asia/Seoul" />
+		<property name="username" value="smuser" />
+		<property name="password" value="1234" />
+	</bean>
+
+	<!--
+         MyBatis SqlSessionFactory 설정
+        매퍼 XML 파일들은 src/main/resources/mapper/*.xml 에 위치한다고 가정
+    -->
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath*:mapper/*.xml" />
+	</bean>
+
+	<!--
+         트랜잭션 매니저 설정
+        DataSourceTransactionManager를 사용
+    -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- MyBatis 매퍼 스캔 설정 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage"
+			value="com.myproject.dao, com.myproject.mapper" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
+
+	<!-- jwt 유틸 빈 등록-->
+	<bean id="jwtUtil" class="com.myproject.security.JwtUtil" />
+
+	<!--
+         트랜잭션 어노테이션 활성화
+        @Transactional 사용 가능
+    -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+</beans>

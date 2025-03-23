@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    servlet-context.xml
+    ────────────────────────────────
+    이 파일은 Spring MVC의 웹 계층 설정을 담당합니다.
+    주요 역할:
+      - Controller 컴포넌트 스캔: com.myproject.controller 패키지 내의 @Controller 빈 자동 등록
+      - Annotation 기반 Spring MVC 설정: @RequestMapping, @Controller 등 활성화
+      - 뷰 리졸버(View Resolver): 컨트롤러가 반환하는 뷰 이름을 실제 JSP 파일 경로로 매핑
+      - (선택 사항) 정적 리소스 핸들링: CSS, JS, 이미지 등 정적 파일 매핑 처리
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--
+        1️⃣ Controller 컴포넌트 스캔
+        ────────────────────────────────
+        com.myproject.controller 패키지 내의 @Controller 어노테이션이 붙은 클래스들을
+        자동으로 스캔하여 빈으로 등록합니다.
+    -->
+    <context:component-scan base-package="com.myproject.controller"/>
+
+    <!--
+        2️⃣ Annotation 기반 Spring MVC 설정
+        ────────────────────────────────
+        Spring MVC의 Annotation 기반 기능(@RequestMapping, @Controller 등)을 활성화합니다.
+    -->
+    <mvc:annotation-driven />
+
+    <!--
+        3️⃣ 정적 리소스 핸들링
+        ────────────────────────────────
+        JSP, CSS, JS, 이미지 등의 정적 리소스 요청을 처리합니다.
+    -->
+    <mvc:resources mapping="/resources/**" location="/resources/"/>
+    <mvc:resources mapping="/assets/**" location="/resources/assets/"/>
+
+    <!--
+        4️⃣ View Resolver 설정
+        ────────────────────────────────
+        InternalResourceViewResolver는 컨트롤러가 반환하는 뷰 이름을 실제 JSP 파일 경로로 매핑하는 역할을 합니다.
+          - prefix: JSP 파일이 위치한 기본 경로
+          - suffix: JSP 파일의 확장자 (여기서는 .jsp)
+    -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+</beans>
